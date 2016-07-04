@@ -7,6 +7,8 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
+import page.Page;
+
 public class FileStore {
     private final static int META_DATA_LENGTH = 4; 
     private String fileName;

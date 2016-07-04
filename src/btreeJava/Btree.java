@@ -2,6 +2,8 @@ package btreeJava;
 
 import java.io.IOException;
 
+import page.Page;
+
 public class Btree {
     
     private FileStore fs;
@@ -25,10 +27,10 @@ public class Btree {
         // 初始空的数据库文件
         if (fs.isEmpty()) {
             Page leafPage = Page.createPage((byte)2, 1);
-            if(leafPage.storeObject(data)) {
-            }
+            leafPage.storeObject(data);
             return;
         }
+        
     }
     
     public byte[] fetch(String objectId) {

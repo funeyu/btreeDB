@@ -1,4 +1,4 @@
-package btreeJava;
+package page;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -132,5 +132,10 @@ public class Page {
     
     public boolean isEmpty() {
         return freeSpace == CAPACITY ? true : false;
+    }
+    
+    public byte[] getBytes() {
+        
+        return rawData.clone();
     }
 }
