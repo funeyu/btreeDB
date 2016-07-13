@@ -88,7 +88,8 @@ public class FileStore {
     
     public static void main(String args[]) {
         try {
-            FileStore.open("java.data");
+            FileStore fs = FileStore.open("java.data");
+            fs.read(Page.CAPACITY);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

@@ -4,9 +4,9 @@ public interface PageBuffer {
     
     public Page getById(int id);
     
-    public void pilePage(int id, Page page);
+    public void pilePage(Page page);
     
     public boolean isPlentished();
     
-    
+    public Page now();
 }
