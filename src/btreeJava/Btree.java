@@ -36,8 +36,14 @@ public class Btree {
             return;
         }
         
-        
-        
+        Page writingNow = writingBuffer.now();
+        while(!writingNow.storeObject(data)) {
+            
+            int parentPageId = writingNow.getParentPageId();
+            Page parent = ;
+            writingNow.maxObjectId()
+            
+        }
     }
     
     public byte[] fetch(String objectId) {

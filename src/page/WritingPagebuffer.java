@@ -1,6 +1,7 @@
 package page;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -10,6 +11,7 @@ public class WritingPagebuffer implements PageBuffer{
     private final AtomicInteger counter = new AtomicInteger();
     private final int size;
     private int nowPageId;
+    private ArrayList<Page> highGenerationPage = new ArrayList();
     
     private WritingPagebuffer (int size) {
         
@@ -53,3 +55,4 @@ public class WritingPagebuffer implements PageBuffer{
     }
 
 }
+

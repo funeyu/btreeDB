@@ -141,7 +141,7 @@ public class Page {
     
     public boolean storeObject(byte[] data) {
         
-        ObjectId objectId = ObjectId.build();
+        ObjectId objectId = maxObjectId = ObjectId.build();
         if(freeSpace > data.length) {
             int start = CAPACITY - freeSpace;
             for (int i = 0, length = data.length; i < length; i ++) {
@@ -165,6 +165,20 @@ public class Page {
         return rawData.clone();
     }
     
+    public int getParentPageId() {
+        
+        return this.parentPageID;
+    }
+    
+    public ObjectId maxObjectId() {
+        
+        return maxObjectId;
+    }
+    
+    public void getHighPage() {
+        
+//        this
+    }
     public static Page shapeFromBytes(byte[] bytes) {
         
         ByteBuffer buffers = ByteBuffer.wrap(bytes);
