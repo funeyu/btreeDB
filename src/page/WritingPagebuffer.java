@@ -2,21 +2,26 @@ package page;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class WritingPagebuffer implements PageBuffer{
 
-    private ConcurrentHashMap<Integer, Page> writingPages = new ConcurrentHashMap<Integer, Page>();
+    private ConcurrentHashMap<Integer, Page> writingPages;
+    private ConcurrentHashMap<Integer, Page> parentPages;
     private final AtomicInteger counter = new AtomicInteger();
     private final int size;
     private int nowPageId;
-    private ArrayList<Page> highGenerationPage = new ArrayList();
+    private int parentPageId;
+    
     
     private WritingPagebuffer (int size) {
         
         this.size = size;
         this.nowPageId = 0;
+        writingPages = new ConcurrentHashMap<Integer, Page>();
+        parentPages = new ConcurrentHashMap<Integer, Page>();
     }
     
     @Override public Page getById(int id) {
@@ -45,6 +50,11 @@ public class WritingPagebuffer implements PageBuffer{
         return new WritingPagebuffer(size);
     }
     
+    public void setParentPageId(int parentPageId) {
+        
+        this.parentPageId = parentPageId;
+    }
+
     public ByteBuffer pourOut () {
         
         ByteBuffer bytes = ByteBuffer.allocate(counter.get() * Page.CAPACITY);

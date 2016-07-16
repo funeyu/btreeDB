@@ -15,16 +15,16 @@ public class FileStore {
     private RandomAccessFile raf;
     private FileChannel fileChannel;
     private MetaData meta;
-    
+
     private FileStore (File f) throws Exception {
-        
+
         raf = new RandomAccessFile(f, "rw");
         fileChannel = raf.getChannel();
         meta = getMetaData(0);
     }
-    
+
     public static FileStore open (String fileName) throws Exception {
-        
+
         File f = new File(fileName);
         if (!f.exists()) {
             ByteBuffer buffer = ByteBuffer.allocate(4 + Page.CAPACITY);
@@ -32,33 +32,33 @@ public class FileStore {
             FileOutputStream fos = new FileOutputStream(fileName);
             fos.getChannel().write(buffer);
         }
-        return new FileStore(f); 
+        return new FileStore(f);
     }
-    
+
     public FileStore seek(long position) throws IOException {
-        
+
         raf.seek(position);
         return this;
     }
-    
+
     public ByteBuffer read(int size) throws IOException {
-        
+
         ByteBuffer buffer = ByteBuffer.allocate(size);
         fileChannel.read(buffer);
         return buffer;
     }
-    
+
     public void write(long position, byte[] content) throws IOException {
-        
+
         raf.seek(position);
         raf.write(content);
     }
-    
+
     public int size() {
-        
+
         return meta.count;
     }
-    
+
     private class MetaData {
         private int count;
         public void restore(ByteBuffer buffer) {
@@ -66,26 +66,26 @@ public class FileStore {
             this.count = buffer.getInt();
         }
     }
-    
+
     private void fill (ByteBuffer buffer) throws IOException {
-        
+
         fileChannel.read(buffer);
     }
-   
+
     private MetaData getMetaData (int position) throws IOException {
-        
+
         ByteBuffer buffer = ByteBuffer.allocate(META_DATA_LENGTH);
         fill(buffer);
         MetaData meta= new MetaData();
         meta.restore(buffer);
         return meta;
     }
-    
+
     public boolean isEmpty () throws IOException {
-        
+
         return meta.count == 0 ? true : false;
     }
-    
+
     public static void main(String args[]) {
         try {
             FileStore fs = FileStore.open("java.data");
@@ -95,6 +95,6 @@ public class FileStore {
             e.printStackTrace();
         }
     }
-    
-    
+
+
 }

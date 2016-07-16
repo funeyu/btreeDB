@@ -28,7 +28,6 @@ public class Btree {
     }
     
     public void store(byte[] data) throws IOException {
-        // 初始空的数据库文件
         if (fs.isEmpty() && writingBuffer.now() == null) {
             Page leafPage = Page.createPage((byte)2, 1, 0);
             leafPage.storeObject(data);
@@ -40,8 +39,6 @@ public class Btree {
         while(!writingNow.storeObject(data)) {
             
             int parentPageId = writingNow.getParentPageId();
-            Page parent = ;
-            writingNow.maxObjectId()
             
         }
     }
