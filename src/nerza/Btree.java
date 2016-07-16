@@ -1,4 +1,4 @@
-package btreeJava;
+package nerza;
 
 import java.io.IOException;
 
@@ -30,13 +30,13 @@ public class Btree {
     public void store(byte[] data) throws IOException {
         if (fs.isEmpty() && writingBuffer.now() == null) {
             Page leafPage = Page.createPage((byte)2, 1, 0);
-            leafPage.storeObject(data);
+            leafPage.storeRecord(data);
             writingBuffer.pilePage(leafPage);
             return;
         }
         
         Page writingNow = writingBuffer.now();
-        while(!writingNow.storeObject(data)) {
+        while(!writingNow.storeRecord(data)) {
             
             int parentPageId = writingNow.getParentPageId();
             

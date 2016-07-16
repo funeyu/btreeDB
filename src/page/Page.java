@@ -3,16 +3,18 @@ package page;
 import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import record.Record;
+
 public class Page {
     public static final int CAPACITY = 4 * 1024;
-    private static AtomicInteger pageCounter;
+    private static AtomicInteger pageCounter = new AtomicInteger();
     private int index;
     private byte type;
     private int level;
     private int freeSpace;
     private byte[] rawData;
-    private ObjectId minObjectId;
-    private ObjectId maxObjectId;
+    private byte[] minRecordIdBytes;
+    private byte[] maxRecordIdBytes;
     private int nextPagePos;
     private int childPageID;
     private int parentPageID;
@@ -27,12 +29,12 @@ public class Page {
         this.parentPageID = parentPageID;
     }
 
-    private Page(byte type, int level, int parentPageID, int childPageID, ObjectId max, ObjectId min) {
+    private Page(byte type, int level, int parentPageID, int childPageID, byte[] max, byte[] min) {
         this.type = type;
         this.level = level;
         this.parentPageID = parentPageID;
-        this.maxObjectId = max;
-        this.minObjectId = min;
+        this.maxRecordIdBytes = max;
+        this.minRecordIdBytes = min;
         this.parentPageID = parentPageID;
         this.childPageID = childPageID;
     }
@@ -62,9 +64,10 @@ public class Page {
         rawData = data;
     }
 
-    public boolean storeObject(byte[] data) {
+    public boolean storeRecord(byte[] data) {
 
-        ObjectId objectId = maxObjectId = ObjectId.build();
+        Record re = Record.build(data);
+        maxRecordIdBytes = re.toIDBytes();
         if(freeSpace > data.length) {
             int start = CAPACITY - freeSpace;
             for (int i = 0, length = data.length; i < length; i ++) {
@@ -93,33 +96,39 @@ public class Page {
         return this.parentPageID;
     }
 
-    public ObjectId maxObjectId() {
+    public byte[] maxRecordIdBytes() {
 
-        return maxObjectId;
+        return maxRecordIdBytes;
     }
 
     public void getHighPage() {
-
-//        this
+        
+        
     }
+    
+    /**
+     * 读取磁盘的二进制字节，建立一个Page存于内存中；
+     * @param bytes
+     * @return
+     */
     public static Page shapeFromBytes(byte[] bytes) {
 
         ByteBuffer buffers = ByteBuffer.wrap(bytes);
-        byte[] objectIdBytes = new byte[10];
+        byte[] recordIdBytes = new byte[10];
         buffers.position(0);
         byte type = buffers.get();
 
         int level = buffers.getInt();
 
-        buffers.get(objectIdBytes);
-        ObjectId maxObjectId = ObjectId.transferedByBytes(objectIdBytes);
+        buffers.get(recordIdBytes);
+        byte[] maxRecordIdBytes = recordIdBytes;
 
-        buffers.get(objectIdBytes);
-        ObjectId minObjectId = ObjectId.transferedByBytes(objectIdBytes);
+        buffers.get(recordIdBytes);
+        byte[] minRecordIdBytes = recordIdBytes;
 
         int childPageID = buffers.getInt();
         int parentPageID = buffers.getInt();
 
-        return new Page(type, level, parentPageID, childPageID, maxObjectId, minObjectId);
+        return new Page(type, level, parentPageID, childPageID, maxRecordIdBytes, minRecordIdBytes);
     }
 }
