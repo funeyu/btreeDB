@@ -34,6 +34,7 @@ public class Record {
         return new Record(record, rawBytes);
     }
     
+    
     /*
      * 获取该条记录的recordID 与 rawData数据组成的byte[];
      * 在将该条数据从内存写入到磁盘时候调用

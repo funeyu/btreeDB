@@ -1,9 +1,11 @@
 package nerza;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import page.Page;
 import page.WritingPagebuffer;
+import record.RecordInfo;
 
 public class Btree {
     
@@ -36,11 +38,33 @@ public class Btree {
         }
         
         Page writingNow = writingBuffer.now();
-        while(!writingNow.storeRecord(data)) {
+        if(!writingNow.storeRecord(data)) {
             
             int parentPageId = writingNow.getParentPageId();
+            Page parentPage = writingBuffer.getParentBy(parentPageId, fs);
+            // 从要写入的data与parentPageId提取出RecordInfo
+            byte[] ribytes = new byte[14];
             
+            byte[] fourBytes = new byte[4];
+            int nowid = writingNow.getId();
+            fourBytes[0] = (byte)((nowid >> 24) & 0xFF);
+            fourBytes[1] = (byte)((nowid >> 16) & 0xFF);
+            fourBytes[2] = (byte)((nowid >> 8) & 0xFF); 
+            fourBytes[3] = (byte)(nowid & 0xFF);
+            
+            System.arraycopy(data, 0, ribytes, 0, 10);
+            System.arraycopy(fourBytes, 0, ribytes, 10, 14);
+            RecordInfo ri = RecordInfo.read(fourBytes);
+            
+            while(!parentPage.storeRecord(ribytes)) {
+                
+            }
+            
+            Page dataPage = Page.createPage((byte)2, 1, parentPage.getId());
+            dataPage.storeRecord(data);
+            writingBuffer.pilePage(dataPage);
         }
+        
     }
     
     public byte[] fetch(String objectId) {
