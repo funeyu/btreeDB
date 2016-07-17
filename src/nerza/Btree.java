@@ -24,16 +24,29 @@ public class Btree {
     public static Btree open(String fileName, int BufferSize) throws Exception {
         
         FileStore fs = FileStore.open(fileName);
-        Page rootPage = Page.createPage((byte)0, 0, -1);
+        Page rootPage = Page.createPage((byte)0, -1);
         rootPage.plenish( fs.read(Page.CAPACITY).array() );
         return new Btree(fs, rootPage, BufferSize);
     }
     
     public void store(byte[] data) throws IOException {
         if (fs.isEmpty() && writingBuffer.now() == null) {
-            Page leafPage = Page.createPage((byte)2, 1, 0);
+            Page leafPage = Page.createPage((byte)2, 0);
             leafPage.storeRecord(data);
             writingBuffer.pilePage(leafPage);
+            int nowid = writingBuffer.now().getId();
+            byte[] recordInfo = new byte[14];
+            
+            byte[] fourBytes = new byte[4];
+            fourBytes[0] = (byte)((nowid >> 24) & 0xFF);
+            fourBytes[1] = (byte)((nowid >> 16) & 0xFF);
+            fourBytes[2] = (byte)((nowid >> 8) & 0xFF);
+            fourBytes[3] = (byte)(nowid & 0xFF);
+            
+            System.arraycopy(data, 0, recordInfo, 0, 10);
+            System.arraycopy(fourBytes, 0, recordInfo, 10, 14);
+            
+            rootPage.storeRecordInfo(recordInfo);
             return;
         }
         
@@ -56,11 +69,19 @@ public class Btree {
             System.arraycopy(fourBytes, 0, ribytes, 10, 14);
             RecordInfo ri = RecordInfo.read(fourBytes);
             
-            while(!parentPage.storeRecord(ribytes)) {
+            while(!parentPage.storeRecordInfo(ribytes)) {
                 
+                if(parentPage.isRootPage()) {
+                    // 到达根Page，将原根Page变为internalPage,并且生成新的根Page
+                    parentPage.changePageType();
+                    byte[] min = parentPage.getMin();
+                    Page rootPage  = Page.createPage((byte)0, -1);
+                    Page internalPage = Page.createPage((byte)1, rootPage.getId());
+                    
+                }
             }
             
-            Page dataPage = Page.createPage((byte)2, 1, parentPage.getId());
+            Page dataPage = Page.createPage((byte)2, parentPage.getId());
             dataPage.storeRecord(data);
             writingBuffer.pilePage(dataPage);
         }
