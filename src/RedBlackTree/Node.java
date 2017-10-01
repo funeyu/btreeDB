@@ -9,13 +9,17 @@ package RedBlackTree;
  */
 public class Node {
 
-    private Node left;
+    private Node left = null;
 
-    private Node right;
+    private Node right = null;
 
     private Node parent;
 
+    private boolean isLeft;
+
     private boolean color;
+
+    private int value;
 
     private Node(boolean color) {
 
@@ -28,6 +32,32 @@ public class Node {
         node.parent = parent;
 
         return node;
+    }
+
+    public Node setValue(int value) {
+
+        this.value = value;
+        return this;
+    }
+
+    public int getValue() {
+
+        return this.value;
+    }
+
+    public boolean isEmpty() {
+
+        return left == null && right == null;
+    }
+
+    public boolean isRoot() {
+
+        return parent == null;
+    }
+
+    public boolean isLeft() {
+
+        return isLeft;
     }
 
     public Node changeColor(boolean color) {
@@ -54,13 +84,24 @@ public class Node {
     public Node setLeft(Node node) {
 
         left = node;
+        node.isLeft = true;
         return this;
     }
 
     public Node setRight(Node node) {
 
         right = node;
+        node.isLeft = false;
         return this;
     }
 
+    public boolean Color() {
+
+        return color;
+    }
+
+    public String toString() {
+
+        return "is" + (isLeft ? " left node；" : "right node;") + "value:" + value;
+    }
 }
