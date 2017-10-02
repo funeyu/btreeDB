@@ -85,6 +85,7 @@ public class Node {
 
         left = node;
         node.isLeft = true;
+        node.parent = this;
         return this;
     }
 
@@ -92,7 +93,13 @@ public class Node {
 
         right = node;
         node.isLeft = false;
+        node.parent = this;
         return this;
+    }
+
+    public void setParent(Node node) {
+
+        parent = node;
     }
 
     public boolean Color() {
