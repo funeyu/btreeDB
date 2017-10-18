@@ -11,15 +11,38 @@ public class RBTree {
 
     public RBTree() {}
 
-    public void put(int value) {
+    public void put(int key, String value) {
 
         if(root.isEmpty()) {
+            root.setKey(key);
             root.setValue(value);
             return ;
         }
 
-        Node empty = findPlace(value, root);
+        Node empty = findPlace(key, value, root);
         reBalance(empty.Parent());
+    }
+
+    /**
+     * 根据key去查询相应的value值
+     * @param key
+     * @return
+     */
+    public Node get(int key) {
+
+        Node curr = root;
+        do {
+            if(curr.getKey() == key) {
+                return curr;
+            }
+            else if(curr.getKey() > key) {
+                curr = curr.Left();
+            } else {
+                curr = curr.Right();
+            }
+        } while(!curr.isEmpty());
+
+        return null;
     }
 
     /**
@@ -108,30 +131,32 @@ public class RBTree {
 
     /**
      * 找到该插入的节点位置
-     * @param inserValue
+     * @param inserKey
      * @param curr
      * @return
      */
-    private Node findPlace(int inserValue, Node curr) {
+    private Node findPlace(int inserKey, String value, Node curr) {
 
-        if(curr.getValue() >= inserValue) {
+        if(curr.getKey() >= inserKey) {
 
             if(curr.Left() == null) {
                 Node left = Node.init(Colors.RED, curr);
-                left.setValue(inserValue);
+                left.setKey(inserKey);
+                left.setValue(value);
                 curr.setLeft(left);
                 return left;
             }
-            return findPlace(inserValue, curr.Left());
+            return findPlace(inserKey, value, curr.Left());
         }
         else {
             if(curr.Right() == null) {
                 Node right = Node.init(Colors.RED, curr);
-                right.setValue(inserValue);
+                right.setValue(value);
+                right.setKey(inserKey);
                 curr.setRight(right);
                 return right;
             }
-            return findPlace(inserValue, curr.Right());
+            return findPlace(inserKey, value , curr.Right());
         }
     }
 
@@ -139,11 +164,17 @@ public class RBTree {
     public static void main(String[] args) {
 
         RBTree tree = new RBTree();
-        tree.put(9);
-        tree.put(10);
+        tree.put(9, "java");
+        tree.put(10, "nodejs");
+        tree.put(2, "eclipse");
+        tree.put(3234, "hello");
+        tree.put(32, "nodejsdd");
+        tree.put(3, "eele");
+        tree.put(0, "djafa");
 
-        Node room = tree.findPlace(8, tree.root);
-        System.out.println(room);
+
+        Node n = tree.get(3234);
+        System.out.println("n" + n.getValue());
     }
 
 }

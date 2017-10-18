@@ -19,7 +19,9 @@ public class Node {
 
     private boolean color;
 
-    private int value;
+    private String value;
+
+    private int key;
 
     private Node(boolean color) {
 
@@ -34,15 +36,26 @@ public class Node {
         return node;
     }
 
-    public Node setValue(int value) {
+    public Node setValue(String value) {
 
         this.value = value;
         return this;
     }
 
-    public int getValue() {
+    public String getValue() {
 
         return this.value;
+    }
+
+    public Node setKey(int key) {
+
+        this.key = key;
+        return this;
+    }
+
+    public int getKey() {
+
+        return this.key;
     }
 
     public boolean isEmpty() {
@@ -109,6 +122,6 @@ public class Node {
 
     public String toString() {
 
-        return "is" + (isLeft ? " left node；" : "right node;") + "value:" + value;
+        return "is" + (isLeft ? " left node；" : " right node;") + "value:" + value;
     }
 }
