@@ -63,6 +63,10 @@ public class Node {
         return left == null && right == null;
     }
 
+    public boolean isNoKey() {
+
+        return this.key == 0;
+    }
     public boolean isRoot() {
 
         return parent == null;
@@ -97,16 +101,21 @@ public class Node {
     public Node setLeft(Node node) {
 
         left = node;
-        node.isLeft = true;
-        node.parent = this;
+        if(node != null ) {
+            node.isLeft = true;
+            node.parent = this;
+        }
         return this;
     }
 
     public Node setRight(Node node) {
 
         right = node;
-        node.isLeft = false;
-        node.parent = this;
+        if(node != null) {
+            node.isLeft = false;
+            node.parent = this;
+        }
+
         return this;
     }
 

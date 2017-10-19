@@ -1,6 +1,8 @@
 package RedBlackTree;
 
 
+import java.awt.*;
+
 /**
  * Created by fuheyu on 2017/9/24.
  */
@@ -41,7 +43,7 @@ public class RBTree {
             } else {
                 curr = curr.Right();
             }
-        } while(!curr.isEmpty());
+        } while(!curr.isNoKey());
 
         return null;
     }
@@ -64,22 +66,28 @@ public class RBTree {
                                                 || (from.Right() != null && from.Right().Color() == Colors.RED))) {
             if(from.Left().Color() == Colors.RED) {
                 from.setParent(from.Parent().Parent());
-
                 from.setRight(from.Parent());
-
-                reBalance(from.Parent());
+                if(from.Parent().isRoot()) {
+                    root = from;
+                } else {
+                    reBalance(from.Parent());
+                }
             } else {
-                from.Right().setRight(from.Parent());
-                from.Right().setLeft(from);
-                from.Right().changeColor(Colors.RED);
 
-                from.changeColor(Colors.BLACK);
                 from.setRight(from.Right().Left());
-                from.setParent(from.Right());
-
-                from.Parent().changeColor(Colors.BLACK);
                 from.Parent().setLeft(from.Right().Right());
-                from.Parent().setParent(from.Right());
+                from.changeColor(Colors.BLACK);
+                from.Parent().changeColor(Colors.BLACK);
+
+                from.Right().setLeft(from);
+                from.Right().setRight(from.Parent());
+
+                if(from.Parent().isRoot()) {
+                    from.changeColor(Colors.BLACK);
+                    root = from ;
+                } else {
+                    from.changeColor(Colors.RED);
+                }
             }
         }
         // 左右两节点都是Red
@@ -87,13 +95,23 @@ public class RBTree {
                 (from.Right() != null && from.Right().Color() == Colors.RED)) {
             from.Left().changeColor(Colors.BLACK);
             from.Right().changeColor(Colors.BLACK);
-            from.changeColor(Colors.RED);
-            reBalance(from.Parent());
+
+            if(from.isRoot()) {
+                from.changeColor(Colors.BLACK);
+                root = from;
+            } else {
+                from.changeColor(Colors.RED);
+                reBalance(from.Parent());
+            }
         }
         else if(from.Right() !=null && from.Right().Color() == Colors.RED) {
 
             rotateLeft(from.Right());
-            return ;
+            if(from.Parent().isRoot()) {
+                root = from.Parent();
+            } else {
+                reBalance(from.Right());
+            }
         }
 
     }
@@ -110,11 +128,10 @@ public class RBTree {
         n.setParent(parent.Parent());
         parent.changeColor(Colors.RED);
         parent.setParent(n);
-        if(n.Left() != null) {
-            parent.setLeft(n.Left());
-        }
 
-        n.setRight(parent);
+        parent.setRight(n.Left());
+
+        n.setLeft(parent);
     }
 
 
@@ -157,12 +174,12 @@ public class RBTree {
         tree.put(10, "nodejs");
         tree.put(2, "eclipse");
         tree.put(3234, "hello");
-        tree.put(32, "nodejsdd");
-        tree.put(3, "eele");
-        tree.put(70, "djafa");
+//        tree.put(32, "nodejsdd");
+//        tree.put(3, "eele");
+//        tree.put(70, "djafa");
 
 
-        Node n = tree.get(3);
+        Node n = tree.get(3234);
         System.out.println("n" + n.getValue());
     }
 
