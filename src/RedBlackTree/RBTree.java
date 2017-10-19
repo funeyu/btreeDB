@@ -1,6 +1,5 @@
 package RedBlackTree;
 
-import java.awt.*;
 
 /**
  * Created by fuheyu on 2017/9/24.
@@ -13,9 +12,11 @@ public class RBTree {
 
     public void put(int key, String value) {
 
-        if(root.isEmpty()) {
+        // 第一次添加数据
+        if(root.isEmpty() && root.getValue() == null) {
             root.setKey(key);
             root.setValue(value);
+
             return ;
         }
 
@@ -58,15 +59,9 @@ public class RBTree {
         if(from.isLeft() && from.Parent().Color() == Colors.BLACK) {
             return ;
         }
-        // 左右两节点都是Red
-        if(from.Left().Color() == Colors.RED && from.Right().Color() == Colors.RED) {
-            from.Left().changeColor(Colors.BLACK);
-            from.Right().changeColor(Colors.BLACK);
-            from.changeColor(Colors.RED);
-            reBalance(from.Parent());
-        }
         // 自己为Red节点，或者左右节点有个为Red节点
-        if(from.Color() == Colors.RED && (from.Left().Color() == Colors.RED || from.Right().Color() == Colors.RED)) {
+        else if(from.Color() == Colors.RED && ((from.Left() !=null && from.Left().Color() == Colors.RED)
+                                                || (from.Right() != null && from.Right().Color() == Colors.RED))) {
             if(from.Left().Color() == Colors.RED) {
                 from.setParent(from.Parent().Parent());
 
@@ -87,7 +82,15 @@ public class RBTree {
                 from.Parent().setParent(from.Right());
             }
         }
-        if(from.Right().Color() == Colors.RED) {
+        // 左右两节点都是Red
+        else if((from.Left() != null && from.Left().Color() == Colors.RED) &&
+                (from.Right() != null && from.Right().Color() == Colors.RED)) {
+            from.Left().changeColor(Colors.BLACK);
+            from.Right().changeColor(Colors.BLACK);
+            from.changeColor(Colors.RED);
+            reBalance(from.Parent());
+        }
+        else if(from.Right() !=null && from.Right().Color() == Colors.RED) {
 
             rotateLeft(from.Right());
             return ;
@@ -95,16 +98,6 @@ public class RBTree {
 
     }
 
-    /**
-     * 1）start节点的left right节点都是red
-     * 2）或者该节点为red，left 或者right 为red节点
-     * 以上两种情况需要提升
-     * @param start
-     */
-    private void lift(Node start) {
-
-
-    }
 
     /**
      * 左旋转n节点和其父节点
@@ -116,18 +109,14 @@ public class RBTree {
         n.changeColor(parent.Color());
         n.setParent(parent.Parent());
         parent.changeColor(Colors.RED);
-        parent.setLeft(n.Left());
+        parent.setParent(n);
+        if(n.Left() != null) {
+            parent.setLeft(n.Left());
+        }
+
         n.setRight(parent);
     }
 
-    /**
-     * 右旋转n节点及其父节点
-     * @param n
-     */
-    private void rotateRight(Node n) {
-
-
-    }
 
     /**
      * 找到该插入的节点位置
@@ -170,10 +159,10 @@ public class RBTree {
         tree.put(3234, "hello");
         tree.put(32, "nodejsdd");
         tree.put(3, "eele");
-        tree.put(0, "djafa");
+        tree.put(70, "djafa");
 
 
-        Node n = tree.get(3234);
+        Node n = tree.get(3);
         System.out.println("n" + n.getValue());
     }
 
