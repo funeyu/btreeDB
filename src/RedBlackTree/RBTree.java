@@ -133,7 +133,14 @@ public class RBTree {
     private void rotateLeft(Node n) {
 
         Node parent = n.Parent();
-
+        if(parent.Parent() != null) {
+            if(parent.isLeft()) {
+                parent.Parent().setLeft(n);
+            }
+            else {
+                parent.Parent().setRight(n);
+            }
+        }
         n.changeColor(parent.Color());
         n.setParent(parent.Parent());
         parent.changeColor(Colors.RED);
@@ -183,7 +190,7 @@ public class RBTree {
         tree.put(10, "nodejs");
         tree.put(2, "eclipse");
         tree.put(3234, "hello");
-//        tree.put(32, "nodejsdd");
+        tree.put(32, "nodejsdd");
 //        tree.put(3, "eele");
 //        tree.put(70, "djafa");
 
