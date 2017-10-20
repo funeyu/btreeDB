@@ -1,8 +1,6 @@
 package RedBlackTree;
 
 
-import java.awt.*;
-
 /**
  * Created by fuheyu on 2017/9/24.
  */
@@ -64,12 +62,16 @@ public class RBTree {
         // 自己为Red节点，或者左右节点有个为Red节点
         else if(from.Color() == Colors.RED && ((from.Left() !=null && from.Left().Color() == Colors.RED)
                                                 || (from.Right() != null && from.Right().Color() == Colors.RED))) {
-            if(from.Left().Color() == Colors.RED) {
+            if((from.Left() !=null && from.Left().Color() == Colors.RED)) {
                 from.setParent(from.Parent().Parent());
                 from.setRight(from.Parent());
+
                 if(from.Parent().isRoot()) {
                     root = from;
+                    root.Left().changeColor(Colors.BLACK);
+                    root.Right().changeColor(Colors.BLACK);
                 } else {
+                    from.changeColor(Colors.RED);
                     reBalance(from.Parent());
                 }
             } else {
@@ -124,10 +126,10 @@ public class RBTree {
     private void rotateLeft(Node n) {
 
         Node parent = n.Parent();
+
         n.changeColor(parent.Color());
         n.setParent(parent.Parent());
         parent.changeColor(Colors.RED);
-        parent.setParent(n);
 
         parent.setRight(n.Left());
 
@@ -174,12 +176,12 @@ public class RBTree {
         tree.put(10, "nodejs");
         tree.put(2, "eclipse");
         tree.put(3234, "hello");
-//        tree.put(32, "nodejsdd");
-//        tree.put(3, "eele");
-//        tree.put(70, "djafa");
+        tree.put(32, "nodejsdd");
+        tree.put(3, "eele");
+        tree.put(70, "djafa");
 
 
-        Node n = tree.get(3234);
+        Node n = tree.get(32);
         System.out.println("n" + n.getValue());
     }
 
