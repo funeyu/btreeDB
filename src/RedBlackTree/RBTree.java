@@ -55,19 +55,21 @@ public class RBTree {
         if(from == null) {
             return ;
         }
-        // 新加红节点，添加在父节点的left 子节点并且其是black，就不做处理
-        if(from.isLeft() && from.Parent().Color() == Colors.BLACK) {
-            return ;
-        }
+
         // 自己为Red节点，或者左右节点有个为Red节点
         else if(from.Color() == Colors.RED && ((from.Left() !=null && from.Left().Color() == Colors.RED)
                                                 || (from.Right() != null && from.Right().Color() == Colors.RED))) {
+            System.out.println("out");
             if((from.Left() !=null && from.Left().Color() == Colors.RED)) {
-                from.setParent(from.Parent().Parent());
+                System.out.println("left");
+                Node grandParent = from.Parent().Parent();
                 from.setRight(from.Parent());
 
-                if(from.Parent().isRoot()) {
+                from.setParent(grandParent);
+
+                if(from.isRoot()) {
                     root = from;
+                    root.changeColor(Colors.BLACK);
                     root.Left().changeColor(Colors.BLACK);
                     root.Right().changeColor(Colors.BLACK);
                 } else {
@@ -114,6 +116,11 @@ public class RBTree {
             } else {
                 reBalance(from.Right());
             }
+        }
+
+        // 新加红节点，添加在父节点的left 子节点，就不做处理
+        else if(from.Color() == Colors.BLACK) {
+            return;
         }
 
     }
@@ -176,13 +183,13 @@ public class RBTree {
         tree.put(10, "nodejs");
         tree.put(2, "eclipse");
         tree.put(3234, "hello");
-        tree.put(32, "nodejsdd");
-        tree.put(3, "eele");
-        tree.put(70, "djafa");
+//        tree.put(32, "nodejsdd");
+//        tree.put(3, "eele");
+//        tree.put(70, "djafa");
 
 
-        Node n = tree.get(32);
-        System.out.println("n" + n.getValue());
+//        Node n = tree.get(32);
+//        System.out.println("n" + n.getValue());
     }
 
 }

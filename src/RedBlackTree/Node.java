@@ -124,6 +124,7 @@ public class Node {
         parent = node;
     }
 
+
     public boolean Color() {
 
         return color;
