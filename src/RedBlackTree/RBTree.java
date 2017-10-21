@@ -61,36 +61,57 @@ public class RBTree {
                                                 || (from.Right() != null && from.Right().Color() == Colors.RED))) {
             System.out.println("out");
             if((from.Left() !=null && from.Left().Color() == Colors.RED)) {
-                System.out.println("left");
-                Node grandParent = from.Parent().Parent();
-                from.setRight(from.Parent());
+                Node parent = Node.clone(from.Parent());
+                Node grandParent = parent.Parent();
+                Boolean isLeft = parent.isLeft();
 
+                parent.setLeft(from.Right());
+
+                from.setRight(parent);
                 from.setParent(grandParent);
+                from.Left().changeColor(Colors.BLACK);
+                from.Right().changeColor(Colors.BLACK);
 
                 if(from.isRoot()) {
                     root = from;
                     root.changeColor(Colors.BLACK);
-                    root.Left().changeColor(Colors.BLACK);
-                    root.Right().changeColor(Colors.BLACK);
                 } else {
                     from.changeColor(Colors.RED);
+                    if(isLeft) {
+                        grandParent.setLeft(from);
+                    } else {
+                        grandParent.setRight(from);
+                    }
                     reBalance(from.Parent());
                 }
             } else {
+                Boolean isLeft = from.Parent().isLeft();
 
-                from.setRight(from.Right().Left());
-                from.Parent().setLeft(from.Right().Right());
+                Node right = Node.clone(from.Right());
+                Node parent = Node.clone(from.Parent());
+                Node grandParent = parent.Parent();
+
+                from.setRight(right.Left());
                 from.changeColor(Colors.BLACK);
-                from.Parent().changeColor(Colors.BLACK);
 
-                from.Right().setLeft(from);
-                from.Right().setRight(from.Parent());
+                parent.setLeft(right.Right());
+                parent.changeColor(Colors.BLACK);
 
-                if(from.Parent().isRoot()) {
+                right.setLeft(from);
+                right.setRight(parent);
+                right.setParent(grandParent);
+
+                if(right.isRoot()) {
                     from.changeColor(Colors.BLACK);
-                    root = from ;
+                    root = right ;
                 } else {
-                    from.changeColor(Colors.RED);
+                    if(isLeft) {
+                        grandParent.setLeft(right);
+                    } else {
+                        grandParent.setRight(right);
+                    }
+                    right.changeColor(Colors.RED);
+                    reBalance(grandParent);
                 }
             }
         }
@@ -191,12 +212,12 @@ public class RBTree {
         tree.put(2, "eclipse");
         tree.put(3234, "hello");
         tree.put(32, "nodejsdd");
-//        tree.put(3, "eele");
+        tree.put(3, "eele");
 //        tree.put(70, "djafa");
 
 
-//        Node n = tree.get(32);
-//        System.out.println("n" + n.getValue());
+        Node n = tree.get(32);
+        System.out.println("n" + n.getValue());
     }
 
 }

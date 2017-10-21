@@ -134,4 +134,14 @@ public class Node {
 
         return "is" + (isLeft ? " left node；" : " right node;") + "value:" + value;
     }
+
+    public static Node clone(Node n) {
+
+        Node node = init(n.Color(), n.Parent());
+        node.setValue(n.getValue());
+        node.setKey(n.getKey());
+        node.isLeft = n.isLeft();
+
+        return node;
+    }
 }
