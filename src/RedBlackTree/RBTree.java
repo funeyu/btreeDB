@@ -171,6 +171,15 @@ public class RBTree {
         n.setLeft(parent);
     }
 
+    public boolean delete(int key) {
+
+        Node del = get(key);
+        if(del == null) {
+            return false;
+        }
+
+
+    }
 
     /**
      * 找到该插入的节点位置
